@@ -276,6 +276,10 @@ MIHOMO_SECRET=<secret> PROXY=http://127.0.0.1:17890 python3 scripts/node_sweep.p
 - Auto-picking the group: `GLOBAL` is listed first and has an `all` array, but it is
   not switchable — skip the builtin groups (`GLOBAL/DIRECT/REJECT/PASS`) and prefer a
   `Selector` whose members are real nodes. Restore the original selection when done.
+- **Do not sweep while the user is mid-turn.** Each switch tears down the live
+  connection, so a 50-node sweep injects a burst of `Connection failed` rows and the
+  user sees "it got worse". Check for an in-flight turn first (Step 0.1), or warn that
+  the next ~2 minutes of errors are yours and say so in the report.
 
 ## Step 8 — GUI app only? check the proxy ENV of the codex child process
 

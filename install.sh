@@ -12,7 +12,7 @@
 set -euo pipefail
 
 NAME="codex-cli-troubleshooting"
-VERSION="1.0.1"
+VERSION="1.0.2"
 ZIP_URL="https://github.com/Alpha-chen/${NAME}/releases/download/v${VERSION}/${NAME}-${VERSION}.zip"
 
 TARGET="hermes"
