@@ -268,6 +268,49 @@ MIHOMO_SECRET=<secret> PROXY=http://127.0.0.1:17890 python3 scripts/node_sweep.p
   list — only possible when the client exposes an editable YAML (this one does not).
 - Sweep results expire fast: 7 working nodes → 0 working inside 40 minutes was observed.
   Re-sweep before claiming anything about node health.
+
+### The node pool rotates — sweep before every session, not once
+
+**Treat a sweep result as valid for minutes, not days.** The working set does not
+just shrink and recover — it *rotates* to a different set of countries. Measured
+on the same subscription, same day, ~3 hours apart:
+
+| Time | Working nodes | Dead |
+|---|---|---|
+| 17:00 | 7 — **all US** (V215 0.80s, V110, V213, V217, V214, V216, V212) | every HK/JP/TW/SG/KR/UK/DE/CA/NL/RU/MY/TH node |
+| 17:50 | 0 — provider-wide outage | everything, US included |
+| 20:30 | 6 — **mostly TW/SG** (TW V107 1.74s, TW V106, SG V101, SG V102, RU V109, HK-V234) | every US node that worked at 17:00 |
+
+Two conclusions that change how you work:
+
+1. **A previously-good node is not a safe default.** The US node pinned at 17:00
+   was dead at 20:30. Hard-coding one node and never re-checking is the same
+   mistake as leaving the group on `自动选择`.
+2. **The failure *shape* tells you which regime you are in.** "Some nodes work,
+   and they are all one country" = the carrier is blocking UDP by region and the
+   region changes. "Zero nodes work, US included, everything at a uniform 5.00s"
+   = the provider's line is down. Different reports, different advice.
+
+So the practical rule:
+
+```bash
+# start of every Codex troubleshooting session — 2 minutes, worth it
+export MIHOMO_CTRL=http://127.0.0.1:9090        # plain HTTP controller
+export MIHOMO_GROUP="🌍 国外网站"
+export PROXY=http://127.0.0.1:7892
+python3 scripts/node_sweep.py
+# then pin whatever it says is fastest, and record the timestamp in the report
+```
+
+Do not skip this because "it worked an hour ago". Do not report a node as
+healthy without a probe from *this* session. When you pin a node, say when it was
+measured:
+
+> 节点：🇹🇼 V107（20:30 实测 1.74s，3 次全 401）
+
+That timestamp is the part that makes the claim honest — it tells the next
+session (or the user, an hour later) that the ranking has an expiry.
+
 - **Switching a node is `PUT /proxies/<GROUP>` with `{"name": <node>}` in the body.**
   `PUT /proxies/<node>` returns `400 Bad Request` for every node, which a naive sweep
   silently turns into "all good" because the probe then measures the *unchanged*
@@ -357,6 +400,10 @@ model) and which ones are already fixed.
   don't diagnose off the warning.
 - **Fix the model that ran, not the one in the file** — compare `config.toml`
   against the model named in the log lines.
+- **不要信任上一次的节点扫描结果。** 同一订阅同一天实测：17:00 可用的是 7 个美国节点，
+  20:30 这 7 个全挂、换成 6 个台湾/新加坡节点。可用集合会**轮换国家**，不只是变多变少。
+  所以每次排障开头先重扫一遍，并在报告里带上测量时间（"V107，20:30 实测 1.74s"）。
+  把一个节点硬编码成默认值再也不复查，和留 `自动选择` 是同一类错误。
 
 ## Related
 
