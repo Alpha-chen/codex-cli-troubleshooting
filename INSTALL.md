@@ -37,8 +37,8 @@ inventory, process environment, network/nodes — and ships three runnable scrip
 **中文**
 
 ```bash
-unzip codex-cli-troubleshooting-1.0.2.zip
-cd codex-cli-troubleshooting-1.0.2
+unzip codex-cli-troubleshooting-1.0.3.zip
+cd codex-cli-troubleshooting-1.0.3
 ./install.sh
 ```
 
@@ -47,8 +47,8 @@ cd codex-cli-troubleshooting-1.0.2
 **English**
 
 ```bash
-unzip codex-cli-troubleshooting-1.0.2.zip
-cd codex-cli-troubleshooting-1.0.2
+unzip codex-cli-troubleshooting-1.0.3.zip
+cd codex-cli-troubleshooting-1.0.3
 ./install.sh
 ```
 

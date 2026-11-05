@@ -25,7 +25,7 @@ it. This skill classifies from Codex's own state before touching any proxy confi
 Bilingual install/usage guide: [INSTALL.md](INSTALL.md).
 
 ```bash
-unzip codex-cli-troubleshooting-1.0.2.zip && cd codex-cli-troubleshooting-1.0.2 && ./install.sh
+unzip codex-cli-troubleshooting-1.0.3.zip && cd codex-cli-troubleshooting-1.0.3 && ./install.sh
 ```
 
 ## What's in here
