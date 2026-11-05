@@ -1,5 +1,7 @@
 # codex-cli-troubleshooting
 
+[![CI](https://github.com/Alpha-chen/codex-cli-troubleshooting/actions/workflows/ci.yml/badge.svg)](https://github.com/Alpha-chen/codex-cli-troubleshooting/actions/workflows/ci.yml)
+
 A diagnosis playbook (Hermes Agent *skill*) for Codex CLI / Codex Desktop failures:
 endless reconnect loops, `Selected model is at capacity`, `400 model_not_found`,
 `Connection failed: error sending request`, `workspace routing discovery failed`.

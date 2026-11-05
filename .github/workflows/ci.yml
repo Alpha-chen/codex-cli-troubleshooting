@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scripts:
+    name: Python scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Byte-compile every script
+        run: python -m py_compile scripts/*.py
+
+      - name: Import each script (catches import-time crashes)
+        run: |
+          python - <<'PY'
+          import importlib.util, pathlib, sys
+          failed = []
+          for path in sorted(pathlib.Path("scripts").glob("*.py")):
+              spec = importlib.util.spec_from_file_location(path.stem, path)
+              mod = importlib.util.module_from_spec(spec)
+              try:
+                  spec.loader.exec_module(mod)
+                  print(f"ok   {path}")
+              except Exception as exc:  # noqa: BLE001
+                  failed.append(f"{path}: {exc}")
+          if failed:
+              print("\n".join(failed), file=sys.stderr)
+              sys.exit(1)
+          PY
+
+      - name: Guard against committed credentials
+        run: |
+          if grep -rInE "(gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}|sk-[A-Za-z0-9]{32,}|AKIA[0-9A-Z]{16})" \
+               --include='*.py' --include='*.md' --include='*.yml' .; then
+            echo "::error::possible credential committed"; exit 1
+          fi
+          echo "no credential-shaped strings"
+
+  markdown:
+    name: Markdown links
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check links in Markdown
+        uses: lycheeverse/lychee-action@v2
+        with:
+          # 403/429 are rate-limit or bot walls, not dead links
+          args: >-
+            --verbose --no-progress --max-retries 2 --timeout 20
+            --accept 200,204,206,301,302,403,429
+            './**/*.md'
+          fail: true
