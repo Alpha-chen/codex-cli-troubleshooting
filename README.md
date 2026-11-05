@@ -19,6 +19,15 @@ it. This skill classifies from Codex's own state before touching any proxy confi
 | 3. Environment | `error sending request` on every request | `HTTP(S)_PROXY` in the process env points at a dead port |
 | 4. Network / nodes | timeouts, `routing discovery failed` | proxy node or provider line is down |
 
+## Install
+
+中英双语安装与使用说明见 [INSTALL.md](INSTALL.md)。
+Bilingual install/usage guide: [INSTALL.md](INSTALL.md).
+
+```bash
+unzip codex-cli-troubleshooting-1.0.1.zip && cd codex-cli-troubleshooting-1.0.1 && ./install.sh
+```
+
 ## What's in here
 
 ```

@@ -12,7 +12,7 @@
 set -euo pipefail
 
 NAME="codex-cli-troubleshooting"
-VERSION="1.0.0"
+VERSION="1.0.1"
 ZIP_URL="https://github.com/Alpha-chen/${NAME}/releases/download/v${VERSION}/${NAME}-${VERSION}.zip"
 
 TARGET="hermes"
@@ -107,6 +107,7 @@ install_into() {
   cp "$SRC/SKILL.md" "$dest/SKILL.md"
   cp "$SRC"/scripts/*.py "$dest/scripts/"
   [ -f "$SRC/README.md" ] && cp "$SRC/README.md" "$dest/README.md"
+  [ -f "$SRC/INSTALL.md" ] && cp "$SRC/INSTALL.md" "$dest/INSTALL.md"
   [ -f "$SRC/LICENSE" ]   && cp "$SRC/LICENSE"   "$dest/LICENSE"
   chmod +x "$dest/scripts/"*.py
 
